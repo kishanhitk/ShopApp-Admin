@@ -5,9 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_admin/Models/orderItems.dart';
+import 'package:shop_admin/Models/unit.dart';
 import 'package:shop_admin/Reusables/constants.dart';
 import 'package:share/share.dart';
 import 'package:screenshot/screenshot.dart';
+
+import '../Services/database.dart';
+import '../Services/database.dart';
 
 class OrderDetails extends StatefulWidget {
   final OrderItem orderItem;
@@ -31,6 +35,7 @@ class _OrderDetailsState extends State<OrderDetails> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          print(products);
           Share.share("Order Details:\nDeliver To-\n$deliverTo \n$products",
               subject: "Order Details");
         },
@@ -137,37 +142,65 @@ class _OrderDetailsState extends State<OrderDetails> {
                       itemBuilder: (BuildContext context, int index) {
                         String key =
                             widget.orderItem.items.keys.elementAt(index);
-                        products
-                            .add("\n$key - ${widget.orderItem.items[key]}\n");
-                        return Padding(
-                          padding: const EdgeInsets.only(left: 20.0, top: 10),
-                          child: Column(
-                            children: <Widget>[
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Text(
-                                    "$key ",
-                                    style: GoogleFonts.questrial(
-                                        color: Colors.black, fontSize: 20),
+                        Firestore.instance
+                            .collection("Shop")
+                            .document(key)
+                            .get()
+                            .then((value) {
+                          products.add(
+                              "\n$key - ${widget.orderItem.items[key]} - ${value['description']}\n");
+                        });
+                        return StreamBuilder(
+                            stream: DatabaseServices().getUnit(key),
+                            builder: (context, snap) {
+                              Unit unit = snap.data;
+                              if (snap.hasData) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 20.0, top: 10),
+                                  child: Column(
+                                    children: <Widget>[
+                                      Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                          Text(
+                                            "$key ",
+                                            style: GoogleFonts.questrial(
+                                                color: Colors.black,
+                                                fontSize: 20),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                right: 20.0),
+                                            child: Text(
+                                                " ${widget.orderItem.items[key]}",
+                                                style: GoogleFonts.lato(
+                                                    fontWeight: FontWeight.w400,
+                                                    color: Colors.black54,
+                                                    fontSize: 16)),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                right: 20.0),
+                                            child: Text(unit.unit,
+                                                style: GoogleFonts.lato(
+                                                    fontWeight: FontWeight.w400,
+                                                    color: Colors.black54,
+                                                    fontSize: 16)),
+                                          ),
+                                        ],
+                                      ),
+                                      Divider()
+                                    ],
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 20.0),
-                                    child: Text(
-                                        " ${widget.orderItem.items[key]}",
-                                        style: GoogleFonts.lato(
-                                            fontWeight: FontWeight.w400,
-                                            color: Colors.black54,
-                                            fontSize: 16)),
-                                  ),
-                                ],
-                              ),
-                              Divider()
-                            ],
-                          ),
-                        );
+                                );
+                              } else {
+                                return LinearProgressIndicator();
+                              }
+                            });
                       },
                     ),
                   ),
