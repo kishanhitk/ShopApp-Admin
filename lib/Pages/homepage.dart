@@ -31,7 +31,9 @@ class _HomePageState extends State<HomePage> {
             ),
             ListTile(
               title: Text('All Orders'),
-              onTap: () {},
+              onTap: () {
+                Navigator.pop(context);
+              },
             ),
             ListTile(
               title: Text('Customers'),
@@ -57,21 +59,33 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
                   RaisedButton(
-                      child: Text("Delivered"),
+                      color: Colors.green,
+                      child: Text(
+                        "Delivered",
+                        style: TextStyle(color: Colors.white),
+                      ),
                       onPressed: () {
                         setState(() {
                           type = "Delivered";
                         });
                       }),
                   RaisedButton(
-                      child: Text("Cancelled"),
+                      color: Colors.red,
+                      child: Text(
+                        "Cancelled",
+                        style: TextStyle(color: Colors.white),
+                      ),
                       onPressed: () {
                         setState(() {
                           type = "Cancelled";
                         });
                       }),
                   RaisedButton(
-                      child: Text("Not Delivered"),
+                      color: Color(0xFF0013A8),
+                      child: Text(
+                        "Not Delivered",
+                        style: TextStyle(color: Colors.white),
+                      ),
                       onPressed: () {
                         setState(() {
                           type = "Not Delivered";
