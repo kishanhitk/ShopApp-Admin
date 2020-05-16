@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shop_admin/Models/customer.dart';
 import 'package:shop_admin/Models/orderItems.dart';
+import 'package:shop_admin/Models/unit.dart';
 
 class DatabaseServices {
   final _db = Firestore.instance;
@@ -18,5 +19,11 @@ class DatabaseServices {
     var ref = _db.collection("Users").snapshots();
     return ref.map((list) =>
         list.documents.map((item) => Customer.fromfirebase(item)).toList());
+  }
+
+  Stream<Unit> getUnit(String productName) {
+    // print("productName " + productName);
+    var ref = _db.collection("Shop").document(productName).snapshots();
+    return ref.map((list) => Unit.fromFirebase(list));
   }
 }
