@@ -9,6 +9,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: "Shop Admin",
       theme: ThemeData(
         primaryColor: Color(0xFF0013A8),
       ),

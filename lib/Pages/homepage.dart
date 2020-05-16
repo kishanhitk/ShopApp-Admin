@@ -64,6 +64,13 @@ class _HomePageState extends State<HomePage> {
                         });
                       }),
                   RaisedButton(
+                      child: Text("Cancelled"),
+                      onPressed: () {
+                        setState(() {
+                          type = "Cancelled";
+                        });
+                      }),
+                  RaisedButton(
                       child: Text("Not Delivered"),
                       onPressed: () {
                         setState(() {

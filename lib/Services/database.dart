@@ -9,7 +9,7 @@ class DatabaseServices {
     var ref = _db
         .collection("Orders")
         .where('status', isEqualTo: type)
-        .orderBy('orderDate', descending: true)
+       .orderBy('orderDate', descending: true)
         .snapshots();
     return ref.map((list) =>
         list.documents.map((item) => OrderItem.fromFirebase(item)).toList());
